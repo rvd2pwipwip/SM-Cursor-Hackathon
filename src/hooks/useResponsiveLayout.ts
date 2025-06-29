@@ -11,10 +11,10 @@ interface BreakpointConfig {
 }
 
 const BREAKPOINT_CONFIGS: Record<string, BreakpointConfig> = {
-  xl: { minCardWidth: 200, maxCardWidth: 280, minGap: 20, maxGap: 32 },
-  lg: { minCardWidth: 180, maxCardWidth: 240, minGap: 18, maxGap: 28 },
-  md: { minCardWidth: 160, maxCardWidth: 220, minGap: 16, maxGap: 24 },
-  sm: { minCardWidth: 140, maxCardWidth: 200, minGap: 14, maxGap: 20 },
+  xl: { minCardWidth: 200, maxCardWidth: 280, minGap: 16, maxGap: 32 },
+  lg: { minCardWidth: 180, maxCardWidth: 240, minGap: 14, maxGap: 28 },
+  md: { minCardWidth: 160, maxCardWidth: 220, minGap: 12, maxGap: 24 },
+  sm: { minCardWidth: 140, maxCardWidth: 200, minGap: 10, maxGap: 20 },
 };
 
 const calculateOptimalLayout = (
@@ -28,38 +28,53 @@ const calculateOptimalLayout = (
 } => {
   const config = BREAKPOINT_CONFIGS[breakpoint] || BREAKPOINT_CONFIGS.sm;
 
+  // Add safety buffer to prevent overflow (account for sub-pixel rendering, margins, etc.)
+  const safeAvailableWidth = availableWidth - 4;
+
   // Try different numbers of cards per row
   for (let numCards = 6; numCards >= 1; numCards--) {
-    const totalGaps = (numCards - 1) * config.minGap;
-    const availableForCards = availableWidth - totalGaps;
-    const cardWidth = availableForCards / numCards;
+    const minTotalGaps = (numCards - 1) * config.minGap;
+    const availableForCards = safeAvailableWidth - minTotalGaps;
+    const theoreticalCardWidth = availableForCards / numCards;
 
     // Check if this card width fits within our min-max range
-    if (cardWidth >= config.minCardWidth && cardWidth <= config.maxCardWidth) {
-      // Calculate the actual gap we can use
-      const remainingWidth = availableWidth - numCards * cardWidth;
-      const actualGap = numCards > 1 ? remainingWidth / (numCards - 1) : 0;
+    if (
+      theoreticalCardWidth >= config.minCardWidth &&
+      theoreticalCardWidth <= config.maxCardWidth
+    ) {
+      // Use floor to ensure we don't exceed container width
+      const cardWidth = Math.floor(theoreticalCardWidth);
+
+      // Calculate remaining space and distribute as gaps
+      const totalCardWidth = numCards * cardWidth;
+      const remainingSpace = safeAvailableWidth - totalCardWidth;
+      const gapSize = numCards > 1 ? remainingSpace / (numCards - 1) : 0;
 
       // Ensure gap is within bounds
       const clampedGap = Math.max(
         config.minGap,
-        Math.min(config.maxGap, actualGap)
+        Math.min(config.maxGap, gapSize)
       );
 
-      // Determine card size category based on width
-      const cardSize = cardWidth >= 220 ? "lg" : cardWidth >= 180 ? "md" : "sm";
+      // Final verification: ensure total width doesn't exceed safe available width
+      const totalWidth = totalCardWidth + (numCards - 1) * clampedGap;
+      if (totalWidth <= safeAvailableWidth) {
+        // Determine card size category based on width
+        const cardSizeCategory =
+          cardWidth >= 220 ? "lg" : cardWidth >= 180 ? "md" : "sm";
 
-      return {
-        cardsPerRow: numCards as ValidCardsPerRow,
-        cardSize,
-        gapSize: Math.round(clampedGap),
-        cardWidth: Math.round(cardWidth),
-      };
+        return {
+          cardsPerRow: numCards as ValidCardsPerRow,
+          cardSize: cardSizeCategory,
+          gapSize: Math.floor(clampedGap), // Floor to be safe
+          cardWidth,
+        };
+      }
     }
   }
 
   // Fallback: single card that fits within max width
-  const singleCardWidth = Math.min(config.maxCardWidth, availableWidth);
+  const singleCardWidth = Math.min(config.maxCardWidth, safeAvailableWidth);
   const cardSize =
     singleCardWidth >= 220 ? "lg" : singleCardWidth >= 180 ? "md" : "sm";
 
@@ -67,7 +82,7 @@ const calculateOptimalLayout = (
     cardsPerRow: 1 as ValidCardsPerRow,
     cardSize,
     gapSize: 0,
-    cardWidth: Math.round(singleCardWidth),
+    cardWidth: Math.floor(singleCardWidth),
   };
 };
 

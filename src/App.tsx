@@ -2,8 +2,11 @@ import React from "react";
 import { mockCategories } from "./data/channels";
 import type { Channel, Category } from "./types";
 import CategorySwimlane from "./components/swimlanes/CategorySwimlane";
+import { useResponsiveLayout } from "./hooks/useResponsiveLayout";
 
 function App() {
+  const { cardWidth } = useResponsiveLayout();
+
   const handleChannelClick = (channel: Channel) => {
     console.log("Playing channel:", channel.name);
   };
@@ -30,8 +33,11 @@ function App() {
 
           {/* Content area */}
           <div className="px-10 py-10 space-y-10">
-            {/* Promo Banner placeholder */}
-            <div className="bg-stingray-gray-500 rounded-card h-32 flex items-center justify-center">
+            {/* Promo Banner - height matches card thumbnails */}
+            <div
+              className="bg-stingray-gray-500 rounded-card flex items-center justify-center w-full"
+              style={{ height: `${cardWidth}px` }}
+            >
               <span className="text-white text-5xl font-light">
                 Promo Banner
               </span>
