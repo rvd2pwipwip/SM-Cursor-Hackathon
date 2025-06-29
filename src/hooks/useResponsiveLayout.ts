@@ -128,6 +128,8 @@ const calculateOptimalLayout = (
 export const useResponsiveLayout = (): ResponsiveLayout & {
   containerPadding: number;
   sidebarWidth: number;
+  leftMargin: number;
+  horizontalPadding: number;
 } => {
   const [layout, setLayout] = useState<ResponsiveLayout>({
     cardsPerRow: 6,
@@ -138,12 +140,32 @@ export const useResponsiveLayout = (): ResponsiveLayout & {
     useDistributedLayout: false,
   });
 
+  const [dimensions, setDimensions] = useState({
+    sidebarWidth: 0,
+    leftMargin: 0,
+    horizontalPadding: 0,
+  });
+
   useEffect(() => {
     const calculateLayout = () => {
       const width = window.innerWidth;
-      const sidebarWidth = 80;
-      const containerPadding = 40;
-      const availableWidth = width - sidebarWidth - containerPadding * 2;
+
+      // Calculate proportional sidebar width (6-8% of screen width)
+      const sidebarWidth = Math.max(80, Math.min(120, width * 0.065));
+
+      // Calculate proportional horizontal padding (2-5% of screen width)
+      let paddingPercentage = 0.025; // Default 2.5%
+      if (width >= 1536) paddingPercentage = 0.04; // 2xl: 4%
+      else if (width >= 1280) paddingPercentage = 0.035; // xl: 3.5%
+      else if (width >= 1024) paddingPercentage = 0.03; // lg: 3%
+      else if (width >= 768) paddingPercentage = 0.027; // md: 2.7%
+      else if (width >= 640) paddingPercentage = 0.025; // sm: 2.5%
+
+      const horizontalPadding = width * paddingPercentage;
+      const totalHorizontalPadding = horizontalPadding * 2;
+
+      // Available width for content grid
+      const availableWidth = width - sidebarWidth - totalHorizontalPadding;
 
       // Determine breakpoint
       let breakpoint = "sm";
@@ -162,6 +184,12 @@ export const useResponsiveLayout = (): ResponsiveLayout & {
         breakpoint,
         useDistributedLayout: false,
       });
+
+      setDimensions({
+        sidebarWidth: Math.floor(sidebarWidth),
+        leftMargin: Math.floor(sidebarWidth),
+        horizontalPadding: Math.floor(horizontalPadding),
+      });
     };
 
     calculateLayout();
@@ -172,7 +200,9 @@ export const useResponsiveLayout = (): ResponsiveLayout & {
 
   return {
     ...layout,
-    containerPadding: 40,
-    sidebarWidth: 80,
+    containerPadding: 40, // This is not used anymore, keeping for compatibility
+    sidebarWidth: dimensions.sidebarWidth,
+    leftMargin: dimensions.leftMargin,
+    horizontalPadding: dimensions.horizontalPadding,
   };
 };

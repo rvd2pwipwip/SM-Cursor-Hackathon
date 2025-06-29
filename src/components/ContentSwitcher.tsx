@@ -34,6 +34,21 @@ export default function ContentSwitcher({
     updateActiveTabPosition();
   }, [currentTab, tabs]);
 
+  useEffect(() => {
+    // Update position on window resize or layout changes
+    const handleResize = () => {
+      setTimeout(updateActiveTabPosition, 100);
+    };
+
+    window.addEventListener("resize", handleResize);
+    // Also update after a short delay to ensure layout is stable
+    setTimeout(updateActiveTabPosition, 100);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const updateActiveTabPosition = () => {
     const activeIndex = tabs.findIndex((tab) => tab.id === currentTab);
     const activeTabElement = tabRefs.current[activeIndex];

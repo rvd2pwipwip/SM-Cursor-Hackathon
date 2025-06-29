@@ -7,7 +7,7 @@ import Header from "../Header";
 import { useResponsiveLayout } from "../../hooks/useResponsiveLayout";
 
 function Home() {
-  const { cardWidth } = useResponsiveLayout();
+  const { cardWidth, leftMargin, horizontalPadding } = useResponsiveLayout();
   const [activeFilter, setActiveFilter] = useState(
     homeContentSwitcher.defaultActiveTab || "all"
   );
@@ -54,8 +54,8 @@ function Home() {
 
   return (
     <div className="flex-1 relative">
-      {/* Header with logo, switcher, and subscribe button - positioned on top */}
-      <div className="absolute top-0 left-0 right-0 z-50">
+      {/* Header with glass effect - fixed positioned for stickiness */}
+      <div className="fixed top-0 left-0 right-0 z-50">
         <Header
           switcherTabs={homeContentSwitcher.tabs}
           activeTab={activeFilter}
@@ -66,14 +66,21 @@ function Home() {
       {/* Scrollable Content area - starts from top, scrolls behind header */}
       <div className="h-full overflow-y-auto hide-scrollbar">
         <div
-          className="px-10 space-y-10"
-          style={{ paddingTop: "140px", paddingBottom: "40px" }}
+          className="space-y-10 pt-48 lg:pt-36 pb-10"
+          style={{
+            marginLeft: `${leftMargin}px`,
+            paddingLeft: `${horizontalPadding}px`,
+            paddingRight: `${horizontalPadding}px`,
+          }}
         >
           {/* Promo Banner - only show when "All" filter is active */}
           {activeFilter === "all" && (
             <div
-              className="bg-stingray-gray-500 rounded-card flex items-center justify-center w-full"
-              style={{ height: `${cardWidth}px` }}
+              className="bg-stingray-gray-500 flex items-center justify-center w-full"
+              style={{
+                height: `${cardWidth}px`,
+                borderRadius: `${Math.round(cardWidth * 0.1)}px`,
+              }}
             >
               <span className="text-white text-5xl font-light">
                 Promo Banner

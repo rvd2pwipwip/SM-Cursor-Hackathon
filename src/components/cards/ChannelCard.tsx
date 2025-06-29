@@ -35,6 +35,9 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
   const baseFontSize = Math.round(cardWidth * 0.12);
   const fontSize = Math.max(14, Math.min(28, baseFontSize)); // Min 14px, max 28px
 
+  // Calculate dynamic border radius (10% of card width)
+  const borderRadius = Math.round(cardWidth * 0.1);
+
   return (
     <div
       className="flex flex-col gap-2.5 cursor-pointer group"
@@ -43,17 +46,19 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
     >
       {/* Square Thumbnail */}
       <div
-        className="bg-stingray-gray-500 rounded-card flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-transform transition-shadow duration-200 hover:scale-105"
+        className="bg-stingray-gray-500 flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-transform transition-shadow duration-200 hover:scale-105"
         style={{
           width: cardWidth,
           height: cardHeight,
+          borderRadius: `${borderRadius}px`,
         }}
       >
         {channel.thumbnail && (
           <img
             src={channel.thumbnail}
             alt={channel.name}
-            className="w-full h-full object-cover rounded-card"
+            className="w-full h-full object-cover"
+            style={{ borderRadius: `${borderRadius}px` }}
           />
         )}
       </div>
