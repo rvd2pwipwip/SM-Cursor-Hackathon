@@ -11,10 +11,10 @@ interface BreakpointConfig {
 }
 
 const BREAKPOINT_CONFIGS: Record<string, BreakpointConfig> = {
-  xl: { minCardWidth: 200, maxCardWidth: 280, minGap: 16, maxGap: 32 },
-  lg: { minCardWidth: 180, maxCardWidth: 240, minGap: 14, maxGap: 28 },
-  md: { minCardWidth: 160, maxCardWidth: 220, minGap: 12, maxGap: 24 },
-  sm: { minCardWidth: 140, maxCardWidth: 200, minGap: 10, maxGap: 20 },
+  xl: { minCardWidth: 200, maxCardWidth: 400, minGap: 24, maxGap: 48 },
+  lg: { minCardWidth: 180, maxCardWidth: 350, minGap: 22, maxGap: 44 },
+  md: { minCardWidth: 160, maxCardWidth: 300, minGap: 16, maxGap: 32 },
+  sm: { minCardWidth: 140, maxCardWidth: 250, minGap: 14, maxGap: 28 },
 };
 
 const calculateOptimalLayout = (
@@ -31,7 +31,7 @@ const calculateOptimalLayout = (
   // Add safety buffer to prevent overflow (account for sub-pixel rendering, margins, etc.)
   const safeAvailableWidth = availableWidth - 4;
 
-  // Try different numbers of cards per row
+  // Try different numbers of cards per row with size constraints
   for (let numCards = 6; numCards >= 1; numCards--) {
     const minTotalGaps = (numCards - 1) * config.minGap;
     const availableForCards = safeAvailableWidth - minTotalGaps;
@@ -73,7 +73,46 @@ const calculateOptimalLayout = (
     }
   }
 
-  // Fallback: single card that fits within max width
+  // Fallback for ultra-wide screens: prioritize maximum card count
+  // Try to fit as many cards as possible, capping card size at maxCardWidth
+  for (let numCards = 6; numCards >= 2; numCards--) {
+    const minTotalGaps = (numCards - 1) * config.minGap;
+    const availableForCards = safeAvailableWidth - minTotalGaps;
+    const theoreticalCardWidth = availableForCards / numCards;
+
+    // If card would be too large, cap it at maxCardWidth
+    if (theoreticalCardWidth > config.maxCardWidth) {
+      const cardWidth = config.maxCardWidth;
+      const totalCardWidth = numCards * cardWidth;
+      const remainingSpace = safeAvailableWidth - totalCardWidth;
+
+      // Check if we have enough space for minimum gaps
+      const requiredGaps = (numCards - 1) * config.minGap;
+      if (remainingSpace >= requiredGaps) {
+        const gapSize = numCards > 1 ? remainingSpace / (numCards - 1) : 0;
+        const clampedGap = Math.max(
+          config.minGap,
+          Math.min(config.maxGap, gapSize)
+        );
+
+        // Final verification
+        const totalWidth = totalCardWidth + (numCards - 1) * clampedGap;
+        if (totalWidth <= safeAvailableWidth) {
+          const cardSizeCategory =
+            cardWidth >= 220 ? "lg" : cardWidth >= 180 ? "md" : "sm";
+
+          return {
+            cardsPerRow: numCards as ValidCardsPerRow,
+            cardSize: cardSizeCategory,
+            gapSize: Math.floor(clampedGap),
+            cardWidth,
+          };
+        }
+      }
+    }
+  }
+
+  // Final fallback: single card that fits within max width
   const singleCardWidth = Math.min(config.maxCardWidth, safeAvailableWidth);
   const cardSize =
     singleCardWidth >= 220 ? "lg" : singleCardWidth >= 180 ? "md" : "sm";
