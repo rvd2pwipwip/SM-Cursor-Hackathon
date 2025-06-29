@@ -43,7 +43,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
     >
       {/* Square Thumbnail */}
       <div
-        className="bg-stingray-gray-500 rounded-card flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-all duration-200 hover:scale-105"
+        className="bg-stingray-gray-500 rounded-card flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-transform transition-shadow duration-200 hover:scale-105"
         style={{
           width: cardWidth,
           height: cardHeight,

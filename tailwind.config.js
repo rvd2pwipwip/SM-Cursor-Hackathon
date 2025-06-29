@@ -10,7 +10,7 @@ module.exports = {
         "stingray-blue": "#0070E0",
         "stingray-dark": "#030213",
         "stingray-gray": {
-          100: "rgba(25,25,25,0.05)",
+          100: "rgba(25,25,25,0.1)",
           300: "rgba(25,25,25,0.3)",
           500: "rgba(25,25,25,0.5)",
           700: "rgba(25,25,25,0.7)",
