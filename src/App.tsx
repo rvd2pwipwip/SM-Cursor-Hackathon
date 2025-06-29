@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="min-h-screen bg-white">
       {/* Main layout */}
-      <div className="flex">
+      <div className="flex h-screen">
         {/* Sidebar placeholder - will be moved to its own component later */}
         <div className="w-sidebar bg-gray-100">
           {/* Sidebar content will go here */}

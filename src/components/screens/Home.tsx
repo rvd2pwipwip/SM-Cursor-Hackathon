@@ -3,7 +3,7 @@ import { mockCategories } from "../../data/channels";
 import { homeContentSwitcher } from "../../data/switcher";
 import type { Channel, Category } from "../../types";
 import CategorySwimlane from "../swimlanes/CategorySwimlane";
-import ContentSwitcher from "../ContentSwitcher";
+import Header from "../Header";
 import { useResponsiveLayout } from "../../hooks/useResponsiveLayout";
 
 function Home() {
@@ -53,45 +53,53 @@ function Home() {
   const filteredCategories = getFilteredCategories();
 
   return (
-    <div className="flex-1 overflow-y-auto">
-      {/* Header placeholder */}
-      <div className="h-header bg-gray-50 border-b border-gray-200 flex items-center justify-center">
-        {/* Content Switcher */}
-        <ContentSwitcher
-          tabs={homeContentSwitcher.tabs}
+    <div className="flex-1 relative">
+      {/* Header with logo, switcher, and subscribe button - positioned on top */}
+      <div className="absolute top-0 left-0 right-0 z-50">
+        <Header
+          switcherTabs={homeContentSwitcher.tabs}
           activeTab={activeFilter}
           onTabChange={handleFilterChange}
         />
       </div>
 
-      {/* Content area */}
-      <div className="px-10 py-10 space-y-10">
-        {/* Promo Banner - height matches card thumbnails */}
+      {/* Scrollable Content area - starts from top, scrolls behind header */}
+      <div className="h-full overflow-y-auto hide-scrollbar">
         <div
-          className="bg-stingray-gray-500 rounded-card flex items-center justify-center w-full"
-          style={{ height: `${cardWidth}px` }}
+          className="px-10 space-y-10"
+          style={{ paddingTop: "140px", paddingBottom: "40px" }}
         >
-          <span className="text-white text-5xl font-light">Promo Banner</span>
+          {/* Promo Banner - only show when "All" filter is active */}
+          {activeFilter === "all" && (
+            <div
+              className="bg-stingray-gray-500 rounded-card flex items-center justify-center w-full"
+              style={{ height: `${cardWidth}px` }}
+            >
+              <span className="text-white text-5xl font-light">
+                Promo Banner
+              </span>
+            </div>
+          )}
+
+          {/* Categories */}
+          {filteredCategories.map((category) => (
+            <CategorySwimlane
+              key={category.id}
+              category={category}
+              onChannelClick={handleChannelClick}
+              onMoreClick={handleMoreClick}
+            />
+          ))}
+
+          {/* Empty state */}
+          {filteredCategories.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-stingray-gray-700 text-xl">
+                No content available for "{activeFilter}" filter
+              </p>
+            </div>
+          )}
         </div>
-
-        {/* Categories */}
-        {filteredCategories.map((category) => (
-          <CategorySwimlane
-            key={category.id}
-            category={category}
-            onChannelClick={handleChannelClick}
-            onMoreClick={handleMoreClick}
-          />
-        ))}
-
-        {/* Empty state */}
-        {filteredCategories.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-stingray-gray-700 text-xl">
-              No content available for "{activeFilter}" filter
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
