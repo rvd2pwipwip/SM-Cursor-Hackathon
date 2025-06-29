@@ -26,6 +26,9 @@ export interface ResponsiveLayout {
   cardsPerRow: 1 | 2 | 3 | 4 | 5 | 6;
   cardSize: "sm" | "md" | "lg";
   breakpoint: string;
+  cardWidth: number;
+  gapWidth: number;
+  useDistributedLayout: boolean;
 }
 
 export interface NavigationItem {

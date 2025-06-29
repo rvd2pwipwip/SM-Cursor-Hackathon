@@ -4,18 +4,21 @@ import type { Channel } from "../../types";
 interface ChannelCardProps {
   channel: Channel;
   size?: "sm" | "md" | "lg";
+  width?: number; // Dynamic width for distributed layout
   onClick?: (channel: Channel) => void;
 }
 
-const sizeClasses = {
-  sm: "w-card-sm h-card-sm",
-  md: "w-card-md h-card-md",
-  lg: "w-card-lg h-card-lg",
+// Fallback sizes for non-distributed layouts
+const fallbackSizes = {
+  sm: 160,
+  md: 200,
+  lg: 240,
 };
 
 export const ChannelCard: React.FC<ChannelCardProps> = ({
   channel,
   size = "md",
+  width,
   onClick,
 }) => {
   const handleClick = () => {
@@ -23,23 +26,23 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
     console.log("Channel clicked:", channel.name);
   };
 
+  // Use dynamic width if provided, otherwise fall back to size-based width
+  const cardWidth = width || fallbackSizes[size];
+  const cardHeight = cardWidth; // Always square
+
   return (
     <div
-      className={`
-        ${sizeClasses[size]} 
-        flex flex-col gap-2.5 cursor-pointer group
-        transition-transform duration-200 hover:scale-105
-      `}
+      className="flex flex-col gap-2.5 cursor-pointer group transition-transform duration-200 hover:scale-105"
       onClick={handleClick}
+      style={{ width: cardWidth }}
     >
-      {/* Thumbnail */}
+      {/* Square Thumbnail */}
       <div
-        className={`
-          ${sizeClasses[size]} 
-          bg-stingray-gray-500 rounded-card 
-          flex items-center justify-center
-          group-hover:shadow-lg transition-shadow duration-200
-        `}
+        className="bg-stingray-gray-500 rounded-card flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-shadow duration-200"
+        style={{
+          width: cardWidth,
+          height: cardHeight,
+        }}
       >
         {channel.thumbnail ? (
           <img
@@ -52,8 +55,8 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
         )}
       </div>
 
-      {/* Label */}
-      <div className="w-full">
+      {/* Label - matches thumbnail width */}
+      <div className="flex-shrink-0" style={{ width: cardWidth }}>
         <h3
           className="
             text-stingray-gray-800 font-roboto font-normal text-2xl

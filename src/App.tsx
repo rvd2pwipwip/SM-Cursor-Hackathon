@@ -14,11 +14,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Test Element - Remove this once Tailwind is confirmed working */}
-      <div className="bg-red-500 text-white p-4 text-center font-bold">
-        🎵 TAILWIND TEST - This should be RED with white text 🎵
-      </div>
-
       {/* Temporary simple layout for testing */}
       <div className="flex">
         {/* Sidebar placeholder */}

@@ -1,24 +1,75 @@
 import { useState, useEffect } from "react";
 import type { ResponsiveLayout } from "../types";
 
-const BREAKPOINTS = {
-  xl: 1920,
-  lg: 1600,
-  md: 1200,
-  sm: 768,
-  xs: 480,
-} as const;
-
-const LAYOUT_CONFIGS = {
-  xl: { cardsPerRow: 6, cardSize: "lg" as const },
-  lg: { cardsPerRow: 5, cardSize: "md" as const },
-  md: { cardsPerRow: 4, cardSize: "md" as const },
-  sm: { cardsPerRow: 3, cardSize: "sm" as const },
-  xs: { cardsPerRow: 2, cardSize: "sm" as const },
-  xxs: { cardsPerRow: 1, cardSize: "md" as const },
-} as const;
-
 type ValidCardsPerRow = 1 | 2 | 3 | 4 | 5 | 6;
+
+interface BreakpointConfig {
+  minCardWidth: number;
+  maxCardWidth: number;
+  minGap: number;
+  maxGap: number;
+}
+
+const BREAKPOINT_CONFIGS: Record<string, BreakpointConfig> = {
+  xl: { minCardWidth: 200, maxCardWidth: 280, minGap: 20, maxGap: 32 },
+  lg: { minCardWidth: 180, maxCardWidth: 240, minGap: 18, maxGap: 28 },
+  md: { minCardWidth: 160, maxCardWidth: 220, minGap: 16, maxGap: 24 },
+  sm: { minCardWidth: 140, maxCardWidth: 200, minGap: 14, maxGap: 20 },
+};
+
+const calculateOptimalLayout = (
+  availableWidth: number,
+  breakpoint: string
+): {
+  cardsPerRow: ValidCardsPerRow;
+  cardSize: "sm" | "md" | "lg";
+  gapSize: number;
+  cardWidth: number;
+} => {
+  const config = BREAKPOINT_CONFIGS[breakpoint] || BREAKPOINT_CONFIGS.sm;
+
+  // Try different numbers of cards per row
+  for (let numCards = 6; numCards >= 1; numCards--) {
+    const totalGaps = (numCards - 1) * config.minGap;
+    const availableForCards = availableWidth - totalGaps;
+    const cardWidth = availableForCards / numCards;
+
+    // Check if this card width fits within our min-max range
+    if (cardWidth >= config.minCardWidth && cardWidth <= config.maxCardWidth) {
+      // Calculate the actual gap we can use
+      const remainingWidth = availableWidth - numCards * cardWidth;
+      const actualGap = numCards > 1 ? remainingWidth / (numCards - 1) : 0;
+
+      // Ensure gap is within bounds
+      const clampedGap = Math.max(
+        config.minGap,
+        Math.min(config.maxGap, actualGap)
+      );
+
+      // Determine card size category based on width
+      const cardSize = cardWidth >= 220 ? "lg" : cardWidth >= 180 ? "md" : "sm";
+
+      return {
+        cardsPerRow: numCards as ValidCardsPerRow,
+        cardSize,
+        gapSize: Math.round(clampedGap),
+        cardWidth: Math.round(cardWidth),
+      };
+    }
+  }
+
+  // Fallback: single card that fits within max width
+  const singleCardWidth = Math.min(config.maxCardWidth, availableWidth);
+  const cardSize =
+    singleCardWidth >= 220 ? "lg" : singleCardWidth >= 180 ? "md" : "sm";
+
+  return {
+    cardsPerRow: 1 as ValidCardsPerRow,
+    cardSize,
+    gapSize: 0,
+    cardWidth: Math.round(singleCardWidth),
+  };
+};
 
 export const useResponsiveLayout = (): ResponsiveLayout & {
   containerPadding: number;
@@ -28,61 +79,34 @@ export const useResponsiveLayout = (): ResponsiveLayout & {
     cardsPerRow: 6,
     cardSize: "lg",
     breakpoint: "xl",
+    cardWidth: 240,
+    gapWidth: 24,
+    useDistributedLayout: false,
   });
 
   useEffect(() => {
     const calculateLayout = () => {
       const width = window.innerWidth;
-      const sidebarWidth = 80; // Fixed sidebar width
-      const containerPadding = 40; // Horizontal padding
+      const sidebarWidth = 80;
+      const containerPadding = 40;
       const availableWidth = width - sidebarWidth - containerPadding * 2;
 
-      let config;
-      let breakpoint;
+      // Determine breakpoint
+      let breakpoint = "sm";
+      if (width >= 1920) breakpoint = "xl";
+      else if (width >= 1600) breakpoint = "lg";
+      else if (width >= 1200) breakpoint = "md";
+      else if (width >= 768) breakpoint = "sm";
 
-      if (width >= BREAKPOINTS.xl) {
-        config = LAYOUT_CONFIGS.xl;
-        breakpoint = "xl";
-      } else if (width >= BREAKPOINTS.lg) {
-        config = LAYOUT_CONFIGS.lg;
-        breakpoint = "lg";
-      } else if (width >= BREAKPOINTS.md) {
-        config = LAYOUT_CONFIGS.md;
-        breakpoint = "md";
-      } else if (width >= BREAKPOINTS.sm) {
-        config = LAYOUT_CONFIGS.sm;
-        breakpoint = "sm";
-      } else if (width >= BREAKPOINTS.xs) {
-        config = LAYOUT_CONFIGS.xs;
-        breakpoint = "xs";
-      } else {
-        config = LAYOUT_CONFIGS.xxs;
-        breakpoint = "xxs";
-      }
-
-      // Ensure cards fit properly with gap spacing
-      const cardGap = 20;
-      const totalGaps = (config.cardsPerRow - 1) * cardGap;
-      const cardWidth = (availableWidth - totalGaps) / config.cardsPerRow;
-
-      // Adjust card count if cards would be too small
-      let finalCardsPerRow = config.cardsPerRow;
-      const minCardWidth = 140; // Minimum card width
-
-      if (cardWidth < minCardWidth && finalCardsPerRow > 1) {
-        const calculatedCards = Math.floor(
-          (availableWidth + cardGap) / (minCardWidth + cardGap)
-        );
-        finalCardsPerRow = Math.max(
-          1,
-          Math.min(6, calculatedCards)
-        ) as ValidCardsPerRow;
-      }
+      const optimalLayout = calculateOptimalLayout(availableWidth, breakpoint);
 
       setLayout({
-        cardsPerRow: finalCardsPerRow,
-        cardSize: config.cardSize,
+        cardsPerRow: optimalLayout.cardsPerRow,
+        cardSize: optimalLayout.cardSize,
+        cardWidth: optimalLayout.cardWidth,
+        gapWidth: optimalLayout.gapSize,
         breakpoint,
+        useDistributedLayout: false,
       });
     };
 

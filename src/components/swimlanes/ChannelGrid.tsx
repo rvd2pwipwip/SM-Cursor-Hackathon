@@ -14,42 +14,28 @@ export const ChannelGrid: React.FC<ChannelGridProps> = ({
   maxCards,
   onChannelClick,
 }) => {
-  const { cardsPerRow, cardSize } = useResponsiveLayout();
+  const { cardsPerRow, cardSize, cardWidth, gapWidth } = useResponsiveLayout();
 
-  // Limit channels if maxCards is specified
-  const displayChannels = maxCards ? channels.slice(0, maxCards) : channels;
-
-  // Get grid class based on cards per row
-  const getGridClass = () => {
-    switch (cardsPerRow) {
-      case 1:
-        return "grid-cols-responsive-1";
-      case 2:
-        return "grid-cols-responsive-2";
-      case 3:
-        return "grid-cols-responsive-3";
-      case 4:
-        return "grid-cols-responsive-4";
-      case 5:
-        return "grid-cols-responsive-5";
-      case 6:
-        return "grid-cols-responsive-6";
-      default:
-        return "grid-cols-responsive-6";
-    }
-  };
+  // Limit channels - use maxCards if specified, otherwise use cardsPerRow
+  const limitCards = maxCards || cardsPerRow;
+  const displayChannels = channels.slice(0, limitCards);
 
   return (
     <div
-      className={`
-      grid ${getGridClass()} gap-5 w-full
-    `}
+      className="w-full"
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${cardsPerRow}, 1fr)`,
+        gap: `${gapWidth}px`,
+        alignItems: "start",
+      }}
     >
       {displayChannels.map((channel) => (
         <ChannelCard
           key={channel.id}
           channel={channel}
           size={cardSize}
+          width={cardWidth}
           onClick={onChannelClick}
         />
       ))}
