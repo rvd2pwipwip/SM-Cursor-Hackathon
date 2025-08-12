@@ -12,7 +12,6 @@ const FavoriteChannelCard: React.FC<FavoriteChannelCardProps> = ({
   channel,
   cardWidth,
   cardHeight,
-  gapWidth,
 }) => {
   // Calculate thumbnail dimensions (square, left-aligned)
   const thumbnailSize = cardHeight; // Square thumbnail same height as card
@@ -40,7 +39,7 @@ const FavoriteChannelCard: React.FC<FavoriteChannelCardProps> = ({
               transform: "scale(1.1)", // Slightly scale to avoid blur edge artifacts
             }}
           />
-          <div className="absolute inset-0 bg-black opacity-50" />
+          <div className="absolute inset-0 bg-black opacity-30" />
         </>
       ) : (
         <div className="absolute inset-0 bg-stingray-dark" />
