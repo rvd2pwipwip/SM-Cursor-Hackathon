@@ -138,6 +138,8 @@ export const useResponsiveLayout = (): ResponsiveLayout & {
     cardWidth: 240,
     gapWidth: 24,
     useDistributedLayout: false,
+    favoriteCardsPerRow: 3,
+    favoriteCardWidth: 480,
   });
 
   const [dimensions, setDimensions] = useState({
@@ -176,6 +178,19 @@ export const useResponsiveLayout = (): ResponsiveLayout & {
 
       const optimalLayout = calculateOptimalLayout(availableWidth, breakpoint);
 
+      // Calculate favorite card dimensions
+      const favoriteCardsPerRow = Math.floor(optimalLayout.cardsPerRow / 2);
+      const totalFavoriteGaps =
+        favoriteCardsPerRow > 1
+          ? (favoriteCardsPerRow - 1) * optimalLayout.gapSize
+          : 0;
+      const favoriteCardWidth =
+        favoriteCardsPerRow > 0
+          ? Math.floor(
+              (availableWidth - totalFavoriteGaps) / favoriteCardsPerRow
+            )
+          : 0;
+
       setLayout({
         cardsPerRow: optimalLayout.cardsPerRow,
         cardSize: optimalLayout.cardSize,
@@ -183,6 +198,8 @@ export const useResponsiveLayout = (): ResponsiveLayout & {
         gapWidth: optimalLayout.gapSize,
         breakpoint,
         useDistributedLayout: false,
+        favoriteCardsPerRow,
+        favoriteCardWidth,
       });
 
       setDimensions({

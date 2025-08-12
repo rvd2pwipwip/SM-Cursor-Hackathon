@@ -2,12 +2,19 @@ import type { Channel, Category } from "../types";
 
 export const mockChannels: Channel[] = [
   // Most Popular
-  { id: "1", name: "Today's Top 40", category: "mostPopular", type: "music" },
+  {
+    id: "1",
+    name: "Today's Top 40",
+    category: "mostPopular",
+    type: "music",
+    isFavorite: true,
+  },
   {
     id: "2",
     name: "Massive Classic Rock",
     category: "mostPopular",
     type: "music",
+    isFavorite: true,
   },
   {
     id: "3",
@@ -15,7 +22,13 @@ export const mockChannels: Channel[] = [
     category: "mostPopular",
     type: "music",
   },
-  { id: "4", name: "Easy Breezy", category: "mostPopular", type: "music" },
+  {
+    id: "4",
+    name: "Easy Breezy",
+    category: "mostPopular",
+    type: "music",
+    isFavorite: true,
+  },
   {
     id: "5",
     name: "80s and '90s Pop Rock",
@@ -35,8 +48,15 @@ export const mockChannels: Channel[] = [
     name: "Powerful Day Ahead Affirmations",
     category: "wellness",
     type: "podcast",
+    isFavorite: true,
   },
-  { id: "8", name: "Reiki", category: "wellness", type: "music" },
+  {
+    id: "8",
+    name: "Reiki",
+    category: "wellness",
+    type: "music",
+    isFavorite: true,
+  },
   { id: "9", name: "Om", category: "wellness", type: "music" },
   { id: "10", name: "Peaceful Forest", category: "wellness", type: "music" },
   { id: "11", name: "Softest Piano Ever", category: "wellness", type: "music" },

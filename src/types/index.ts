@@ -6,6 +6,7 @@ export interface Channel {
   type: "music" | "podcast" | "radio" | "audiobook";
   description?: string;
   featured?: boolean;
+  isFavorite?: boolean;
 }
 
 export interface Category {
@@ -29,6 +30,8 @@ export interface ResponsiveLayout {
   cardWidth: number;
   gapWidth: number;
   useDistributedLayout: boolean;
+  favoriteCardsPerRow: number;
+  favoriteCardWidth: number;
 }
 
 export interface NavigationItem {

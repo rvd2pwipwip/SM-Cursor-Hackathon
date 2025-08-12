@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { mockCategories } from "../../data/channels";
+import { useState } from "react";
+import { mockCategories, mockChannels } from "../../data/channels";
 import { homeContentSwitcher } from "../../data/switcher";
 import type { Channel, Category } from "../../types";
 import CategorySwimlane from "../swimlanes/CategorySwimlane";
+import FavoriteSwimlane from "../swimlanes/FavoriteSwimlane";
 import Header from "../Header";
 import { useResponsiveLayout } from "../../hooks/useResponsiveLayout";
 
@@ -52,6 +53,13 @@ function Home() {
 
   const filteredCategories = getFilteredCategories();
 
+  // Get favorite channels from all channels
+  const getFavoriteChannels = () => {
+    return mockChannels.filter((channel) => channel.isFavorite);
+  };
+
+  const favoriteChannels = getFavoriteChannels();
+
   return (
     <div className="flex-1 relative">
       {/* Header with glass effect - fixed positioned for stickiness */}
@@ -86,6 +94,11 @@ function Home() {
                 Promo Banner
               </span>
             </div>
+          )}
+
+          {/* Favorite Swimlane - show when user has favorites */}
+          {favoriteChannels.length > 0 && (
+            <FavoriteSwimlane favoriteChannels={favoriteChannels} />
           )}
 
           {/* Categories */}
