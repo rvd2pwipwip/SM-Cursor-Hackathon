@@ -8,13 +8,13 @@ export const mockChannels: Channel[] = [
     category: "mostPopular",
     type: "music",
     isFavorite: true,
+    thumbnail: "https://picsum.photos/400/400?random=1",
   },
   {
     id: "2",
     name: "Massive Classic Rock",
     category: "mostPopular",
     type: "music",
-    isFavorite: true,
   },
   {
     id: "3",
@@ -27,7 +27,6 @@ export const mockChannels: Channel[] = [
     name: "Easy Breezy",
     category: "mostPopular",
     type: "music",
-    isFavorite: true,
   },
   {
     id: "5",
@@ -48,14 +47,12 @@ export const mockChannels: Channel[] = [
     name: "Powerful Day Ahead Affirmations",
     category: "wellness",
     type: "podcast",
-    isFavorite: true,
   },
   {
     id: "8",
     name: "Reiki",
     category: "wellness",
     type: "music",
-    isFavorite: true,
   },
   { id: "9", name: "Om", category: "wellness", type: "music" },
   { id: "10", name: "Peaceful Forest", category: "wellness", type: "music" },

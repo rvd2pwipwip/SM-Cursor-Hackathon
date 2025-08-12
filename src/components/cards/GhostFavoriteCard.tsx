@@ -31,11 +31,12 @@ const GhostFavoriteCard: React.FC<GhostFavoriteCardProps> = ({
         }}
       >
         <div
-          className="border-2 border-dashed border-gray-300 flex items-center justify-center"
+          className="border-2 border-dashed flex items-center justify-center"
           style={{
             width: thumbnailSize,
             height: thumbnailSize,
             borderRadius: `${borderRadius}px`,
+            borderColor: "#777777",
           }}
         >
           <div className="text-gray-400 text-xs">♥</div>

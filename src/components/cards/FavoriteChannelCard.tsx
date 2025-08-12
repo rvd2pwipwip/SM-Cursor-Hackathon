@@ -14,63 +14,57 @@ const FavoriteChannelCard: React.FC<FavoriteChannelCardProps> = ({
   cardHeight,
   gapWidth,
 }) => {
-  // Calculate thumbnail dimensions (square, centered in left half)
-  const thumbnailSize = Math.min(cardHeight, cardWidth / 2 - 20); // 20px padding
-  const borderRadius = Math.round(thumbnailSize * 0.1);
+  // Calculate thumbnail dimensions (square, left-aligned)
+  const thumbnailSize = cardHeight; // Square thumbnail same height as card
+  const cardBorderRadius = Math.round(cardHeight * 0.1); // Card border radius
 
   // Calculate font size based on card width (smaller than regular cards)
   const fontSize = Math.max(14, Math.min(18, Math.round(cardWidth * 0.06)));
 
   return (
     <div
-      className="flex flex-shrink-0 bg-stingray-dark rounded-card overflow-hidden transition-transform transition-shadow duration-200 hover:scale-105 hover:shadow-lg"
+      className="flex flex-shrink-0 overflow-hidden transition-transform transition-shadow duration-200 hover:scale-105 hover:shadow-lg relative"
       style={{
         width: cardWidth,
         height: cardHeight,
-        borderRadius: `${borderRadius}px`,
+        borderRadius: `${cardBorderRadius}px`,
       }}
     >
-      {/* Left half - Thumbnail */}
+      {/* Background Image with Blur and Scrim */}
+      {channel.thumbnail ? (
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center filter blur-md"
+            style={{
+              backgroundImage: `url(${channel.thumbnail})`,
+              transform: "scale(1.1)", // Slightly scale to avoid blur edge artifacts
+            }}
+          />
+          <div className="absolute inset-0 bg-black opacity-50" />
+        </>
+      ) : (
+        <div className="absolute inset-0 bg-stingray-dark" />
+      )}
+      {/* Left-aligned Square Thumbnail */}
       <div
-        className="flex items-center justify-center bg-gray-200"
+        className="flex items-center justify-center flex-shrink-0 relative z-10"
         style={{
-          width: cardWidth / 2,
-          height: cardHeight,
+          width: thumbnailSize,
+          height: thumbnailSize,
+          backgroundColor: "#777777",
         }}
       >
-        {channel.thumbnail ? (
+        {channel.thumbnail && (
           <img
             src={channel.thumbnail}
             alt={channel.name}
-            className="object-cover"
-            style={{
-              width: thumbnailSize,
-              height: thumbnailSize,
-              borderRadius: `${borderRadius}px`,
-            }}
+            className="w-full h-full object-cover"
           />
-        ) : (
-          <div
-            className="bg-gray-400 flex items-center justify-center"
-            style={{
-              width: thumbnailSize,
-              height: thumbnailSize,
-              borderRadius: `${borderRadius}px`,
-            }}
-          >
-            <div className="text-gray-600 text-xs">No Image</div>
-          </div>
         )}
       </div>
 
-      {/* Right half - Content */}
-      <div
-        className="flex flex-col justify-center px-4"
-        style={{
-          width: cardWidth / 2,
-          height: cardHeight,
-        }}
-      >
+      {/* Content section - fills remaining space */}
+      <div className="flex flex-col justify-center px-4 flex-1 relative z-10">
         <h3
           className="text-white font-medium line-clamp-2 leading-tight"
           style={{ fontSize: `${fontSize}px` }}
@@ -78,9 +72,10 @@ const FavoriteChannelCard: React.FC<FavoriteChannelCardProps> = ({
           {channel.name}
         </h3>
 
-        {/* Optional: Channel type indicator */}
+        {/* TODO: Replace with type icon and make conditional based on filter mode */}
+        {/* Only show when app is in "All" filter mode, hide for specific categories */}
         <div className="mt-1">
-          <span className="text-stingray-gray text-xs capitalize">
+          <span className="text-white/60 text-xs capitalize">
             {channel.type}
           </span>
         </div>
