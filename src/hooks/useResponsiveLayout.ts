@@ -152,8 +152,8 @@ export const useResponsiveLayout = (): ResponsiveLayout & {
     const calculateLayout = () => {
       const width = window.innerWidth;
 
-      // Calculate proportional sidebar width (6-8% of screen width)
-      const sidebarWidth = Math.max(80, Math.min(120, width * 0.065));
+      // Fixed sidebar width (80px as per Figma reference)
+      const sidebarWidth = 80;
 
       // Calculate proportional horizontal padding (2-5% of screen width)
       let paddingPercentage = 0.025; // Default 2.5%
