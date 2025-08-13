@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import ContentSwitcher from "./ContentSwitcher";
 import type { SwitcherTab } from "../data/switcher";
 import stingrayLogo from "../assets/stingray-logo.svg";

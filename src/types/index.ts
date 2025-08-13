@@ -56,3 +56,28 @@ export interface ModalState {
   category?: Category;
   onClose: () => void;
 }
+
+// Music Filter Types
+export interface FilterItem {
+  id: string;
+  label: string;
+  description?: string;
+  color?: string;
+  isSelected?: boolean;
+}
+
+export interface FilterCategory {
+  id: string;
+  name: string;
+  items: FilterItem[];
+}
+
+export type FilterType = "genre" | "era" | "mood" | "activity" | "theme";
+
+export interface MusicFilters {
+  genre: FilterCategory;
+  era: FilterCategory;
+  mood: FilterCategory;
+  activity: FilterCategory;
+  theme: FilterCategory;
+}
