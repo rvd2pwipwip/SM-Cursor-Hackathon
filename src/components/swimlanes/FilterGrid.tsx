@@ -6,14 +6,12 @@ import CategoryCard from "../cards/CategoryCard";
 interface FilterGridProps {
   channels: Channel[];
   maxCards?: number;
-  selectedFilter?: string;
   onChannelClick?: (channel: Channel) => void;
 }
 
 export const FilterGrid: React.FC<FilterGridProps> = ({
   channels,
   maxCards,
-  selectedFilter,
   onChannelClick,
 }) => {
   const { cardsPerRow, cardWidth, gapWidth } = useResponsiveLayout();
@@ -37,7 +35,6 @@ export const FilterGrid: React.FC<FilterGridProps> = ({
           key={channel.id}
           label={channel.name}
           width={cardWidth}
-          isSelected={selectedFilter === channel.id}
           onClick={() => onChannelClick?.(channel)}
         />
       ))}

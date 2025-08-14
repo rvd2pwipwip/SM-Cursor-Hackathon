@@ -6,14 +6,12 @@ import FilterGrid from "./FilterGrid";
 
 interface FilterSwimlaneProps {
   category: Category;
-  selectedFilter?: string;
   onChannelClick?: (channel: Channel) => void;
   onMoreClick?: (category: Category) => void;
 }
 
 export const FilterSwimlane: React.FC<FilterSwimlaneProps> = ({
   category,
-  selectedFilter,
   onChannelClick,
   onMoreClick,
 }) => {
@@ -30,7 +28,6 @@ export const FilterSwimlane: React.FC<FilterSwimlaneProps> = ({
       <FilterGrid
         channels={category.channels}
         maxCards={cardsPerRow}
-        selectedFilter={selectedFilter}
         onChannelClick={onChannelClick}
       />
     </div>

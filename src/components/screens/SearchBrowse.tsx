@@ -12,22 +12,18 @@ function SearchBrowse() {
   const [activeContentType, setActiveContentType] = useState(
     searchBrowseContentSwitcher.defaultActiveTab || "music"
   );
-  const [selectedFilter, setSelectedFilter] = useState<string>("");
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isHeaderMeasured, setIsHeaderMeasured] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
 
   const handleContentTypeChange = (contentType: string) => {
     setActiveContentType(contentType);
-    // Reset filter when switching content types
-    setSelectedFilter("");
     console.log("Content type changed to:", contentType);
   };
 
-  const handleFilterSelect = (filterId: string) => {
-    // Single selection behavior - replace current selection
-    setSelectedFilter(filterId === selectedFilter ? "" : filterId);
-    console.log("Filter selected:", filterId);
+  const handleFilterClick = (channel: Channel) => {
+    console.log("Navigate to category grid view for:", channel.name);
+    // TODO: Implement navigation to category grid view
   };
 
   const handleCategoryMoreClick = (category: Category) => {
@@ -45,7 +41,6 @@ function SearchBrowse() {
     category: categoryId,
     type: "music" as const,
     description: filter.description,
-    isFavorite: selectedFilter === filter.id, // Use selection state as favorite for visual feedback
   });
 
   // Transform FilterCategory to Category for CategorySwimlane
@@ -60,10 +55,6 @@ function SearchBrowse() {
       transformFilterToChannel(item, categoryId)
     ),
   });
-
-  const clearAllFilters = () => {
-    setSelectedFilter("");
-  };
 
   // Use useLayoutEffect to measure header AFTER DOM layout but BEFORE paint
   useLayoutEffect(() => {
@@ -206,55 +197,26 @@ function SearchBrowse() {
           {/* Show content based on active content type */}
           {activeContentType === "music" ? (
             <>
-              {/* Clear Filter Button */}
-              {selectedFilter && (
-                <div className="flex justify-center">
-                  <button
-                    onClick={clearAllFilters}
-                    className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                  >
-                    Clear Filter
-                  </button>
-                </div>
-              )}
-
               {/* Filter Category Swimlanes */}
               {filterCategories.map((category) => (
                 <FilterSwimlane
                   key={category.id}
                   category={category}
-                  selectedFilter={selectedFilter}
-                  onChannelClick={(channel) => handleFilterSelect(channel.id)}
+                  onChannelClick={handleFilterClick}
                   onMoreClick={handleCategoryMoreClick}
                 />
               ))}
 
-              {/* Results Section */}
-              {selectedFilter ? (
-                <div className="bg-gray-50 rounded-lg p-12 text-center">
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                    Search Results
-                  </h3>
-                  <p className="text-gray-600 text-lg mb-4">
-                    Showing results for selected filter
-                  </p>
-                  <div className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
-                    <p className="text-gray-500">
-                      Music results matching your filter would appear here...
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-gray-50 rounded-lg p-12 text-center">
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                    Ready to Discover Music?
-                  </h3>
-                  <p className="text-gray-600 text-lg">
-                    Select a filter from any category above to find music that
-                    matches your preferences
-                  </p>
-                </div>
-              )}
+              {/* Browse Instructions */}
+              <div className="bg-gray-50 rounded-lg p-12 text-center">
+                <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+                  Ready to Discover Music?
+                </h3>
+                <p className="text-gray-600 text-lg">
+                  Click on any filter above to explore that category's music
+                  selection
+                </p>
+              </div>
             </>
           ) : (
             /* Placeholder for Podcasts/Radio */
