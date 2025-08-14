@@ -46,6 +46,33 @@ export const mockChannels: Channel[] = [
     category: "mostPopular",
     type: "music",
   },
+  {
+    id: "49",
+    name: "Ultimate Rock Anthems",
+    category: "mostPopular",
+    type: "music",
+    description:
+      "The most powerful rock anthems that get your adrenaline pumping. Perfect for workouts, road trips, or whenever you need that extra boost of energy.",
+    tags: ["Rock", "Anthems", "High Energy", "Motivation", "Classic"],
+  },
+  {
+    id: "50",
+    name: "Billboard Hot 100",
+    category: "mostPopular",
+    type: "music",
+    description:
+      "The official Billboard Hot 100 chart featuring the most popular songs across all genres.",
+    tags: ["Billboard", "Charts", "Current", "Popular", "Hot 100"],
+  },
+  {
+    id: "51",
+    name: "Global Top 50",
+    category: "mostPopular",
+    type: "music",
+    description:
+      "The most streamed songs worldwide right now. A global perspective on what's trending.",
+    tags: ["Global", "Worldwide", "Streaming", "International", "Top 50"],
+  },
 
   // Wellness
   {
@@ -67,6 +94,41 @@ export const mockChannels: Channel[] = [
   { id: "10", name: "Peaceful Forest", category: "wellness", type: "music" },
   { id: "11", name: "Softest Piano Ever", category: "wellness", type: "music" },
   { id: "12", name: "Songbirds", category: "wellness", type: "music" },
+  {
+    id: "52",
+    name: "Deep Sleep Meditation",
+    category: "wellness",
+    type: "music",
+    description:
+      "Soothing sounds designed to help you fall into deep, restful sleep.",
+    tags: ["Sleep", "Meditation", "Deep Rest", "Relaxation", "Nighttime"],
+  },
+  {
+    id: "53",
+    name: "Chakra Balancing",
+    category: "wellness",
+    type: "music",
+    description:
+      "Frequencies and tones to align and balance your seven chakras.",
+    tags: ["Chakra", "Healing", "Balance", "Energy", "Spiritual"],
+  },
+  {
+    id: "54",
+    name: "Mindfulness Bell",
+    category: "wellness",
+    type: "music",
+    description: "Gentle bell sounds for meditation and mindfulness practice.",
+    tags: ["Mindfulness", "Bell", "Meditation", "Focus", "Practice"],
+  },
+  {
+    id: "55",
+    name: "Yoga Flow",
+    category: "wellness",
+    type: "music",
+    description:
+      "Perfect background music for your yoga practice and stretching.",
+    tags: ["Yoga", "Flow", "Stretching", "Movement", "Calm"],
+  },
 
   // New Releases
   {
@@ -117,6 +179,30 @@ export const mockChannels: Channel[] = [
     name: "Total Hits UK",
     category: "recommendations",
     type: "music",
+  },
+  {
+    id: "56",
+    name: "Indie Alternative",
+    category: "recommendations",
+    type: "music",
+    description: "Fresh alternative and indie tracks for the modern listener.",
+    tags: ["Indie", "Alternative", "Modern", "Fresh", "Underground"],
+  },
+  {
+    id: "57",
+    name: "Summer Vibes",
+    category: "recommendations",
+    type: "music",
+    description: "Feel-good tracks perfect for sunny days and good times.",
+    tags: ["Summer", "Vibes", "Feel Good", "Sunny", "Upbeat"],
+  },
+  {
+    id: "58",
+    name: "Road Trip Classics",
+    category: "recommendations",
+    type: "music",
+    description: "The perfect soundtrack for your next adventure on the road.",
+    tags: ["Road Trip", "Adventure", "Classic", "Travel", "Journey"],
   },
 
   // Popular Podcasts in Your Area

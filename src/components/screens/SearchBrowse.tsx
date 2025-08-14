@@ -5,11 +5,10 @@ import { searchBrowseContentSwitcher } from "../../data/switcher";
 import ContentSwitcher from "../ContentSwitcher";
 import FilterSwimlane from "../swimlanes/FilterSwimlane";
 import { musicFilters } from "../../data/musicFilters";
-import type { FilterType, Category, Channel } from "../../types";
+import type { Category, Channel } from "../../types";
 
 function SearchBrowse() {
-  const { leftMargin, horizontalPadding, cardWidth, gapWidth, cardsPerRow } =
-    useResponsiveLayout();
+  const { leftMargin, horizontalPadding } = useResponsiveLayout();
   const { navigateToChannel } = useNavigation();
   const [activeContentType, setActiveContentType] = useState(
     searchBrowseContentSwitcher.defaultActiveTab || "music"
