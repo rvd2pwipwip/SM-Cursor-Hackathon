@@ -47,7 +47,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     >
       {/* Square Thumbnail with Overlay Text */}
       <div
-        className="relative flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-all duration-200 hover:scale-105"
+        className="relative flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-shadow duration-200"
         style={{
           width: cardWidth,
           height: cardHeight,

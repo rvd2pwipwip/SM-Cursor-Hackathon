@@ -23,12 +23,12 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="h-screen bg-white">
       {/* Main Menu - fixed position, overlays content */}
       <MainMenu />
 
       {/* Main layout */}
-      <div className="h-screen">
+      <div className="h-full">
         {/* Current screen content - full width but padded to account for sidebar */}
         {renderCurrentScreen()}
       </div>

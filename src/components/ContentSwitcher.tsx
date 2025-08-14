@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import type { SwitcherTab } from "../data/switcher";
 
 interface ContentSwitcherProps {
@@ -21,6 +21,8 @@ export default function ContentSwitcher({
     left: 0,
     width: 0,
   });
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -30,24 +32,61 @@ export default function ContentSwitcher({
     }
   }, [activeTab]);
 
-  useEffect(() => {
-    updateActiveTabPosition();
+  // Use useLayoutEffect to calculate position BEFORE paint
+  useLayoutEffect(() => {
+    const calculateInitialPosition = () => {
+      const activeIndex = tabs.findIndex((tab) => tab.id === currentTab);
+      const activeTabElement = tabRefs.current[activeIndex];
+      const containerElement = containerRef.current;
+
+      // Only proceed if all elements are available
+      if (activeTabElement && containerElement && tabs.length > 0) {
+        // Force a reflow to ensure accurate measurement
+        activeTabElement.offsetWidth;
+        containerElement.offsetWidth;
+
+        const containerRect = containerElement.getBoundingClientRect();
+        const tabRect = activeTabElement.getBoundingClientRect();
+
+        // Only update if we have valid dimensions
+        if (tabRect.width > 0 && containerRect.width > 0) {
+          setActiveTabStyle({
+            left: tabRect.left - containerRect.left,
+            width: tabRect.width,
+          });
+          setIsInitialized(true);
+          setShouldRender(true);
+        }
+      }
+    };
+
+    // Small delay to ensure DOM is fully rendered
+    const timeoutId = setTimeout(calculateInitialPosition, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [currentTab, tabs]);
 
   useEffect(() => {
-    // Update position on window resize or layout changes
+    // Handle position updates for interactions (after initial render)
+    if (isInitialized) {
+      updateActiveTabPosition();
+    }
+  }, [currentTab, tabs, isInitialized]);
+
+  useEffect(() => {
+    // Update position on window resize
     const handleResize = () => {
-      setTimeout(updateActiveTabPosition, 100);
+      if (isInitialized) {
+        setTimeout(updateActiveTabPosition, 100);
+      }
     };
 
     window.addEventListener("resize", handleResize);
-    // Also update after a short delay to ensure layout is stable
-    setTimeout(updateActiveTabPosition, 100);
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isInitialized]);
 
   const updateActiveTabPosition = () => {
     const activeIndex = tabs.findIndex((tab) => tab.id === currentTab);
@@ -55,6 +94,10 @@ export default function ContentSwitcher({
     const containerElement = containerRef.current;
 
     if (activeTabElement && containerElement) {
+      // Force reflow for accurate measurement
+      activeTabElement.offsetWidth;
+      containerElement.offsetWidth;
+
       const containerRect = containerElement.getBoundingClientRect();
       const tabRect = activeTabElement.getBoundingClientRect();
 
@@ -93,19 +136,23 @@ export default function ContentSwitcher({
         data-name="tabs"
       >
         {/* Active Tab Indicator */}
-        <div
-          className="absolute box-border content-stretch flex flex-row items-center justify-start overflow-clip p-0 rounded-[50px] top-0 transition-all duration-300 ease-in-out"
-          data-name="activeTab"
-          style={{
-            left: activeTabStyle.left,
-            width: activeTabStyle.width,
-          }}
-        >
+        {shouldRender && (
           <div
-            className="bg-stingray-blue h-[60px] relative rounded-[50px] w-full"
-            data-name="activeBackground"
-          />
-        </div>
+            className={`absolute box-border content-stretch flex flex-row items-center justify-start overflow-clip p-0 rounded-[50px] top-0 ${
+              isInitialized ? "transition-all duration-300 ease-in-out" : ""
+            }`}
+            data-name="activeTab"
+            style={{
+              left: activeTabStyle.left,
+              width: activeTabStyle.width,
+            }}
+          >
+            <div
+              className="bg-stingray-blue h-[60px] relative rounded-[50px] w-full"
+              data-name="activeBackground"
+            />
+          </div>
+        )}
 
         {/* Tab Labels */}
         <div
