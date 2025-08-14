@@ -10,7 +10,7 @@ export const mockChannels: Channel[] = [
     isFavorite: true,
     thumbnail: "https://picsum.photos/400/400?random=1",
     description:
-      "The hottest tracks dominating the charts right now. Featuring the biggest hits from the most popular artists across all genres, updated daily to keep you in the loop with what's trending.",
+      "The hottest tracks dominating the charts right now. Featuring the biggest hits from the most popular artists across all genres, updated daily to keep you in the loop with what's trending. This channel brings you the absolute best of contemporary music, carefully curated from streaming platforms, radio play, and social media buzz. From chart-topping pop anthems to viral TikTok sensations, we've got your finger on the pulse of what's hot right now. Whether you're looking for your next favorite song or want to stay current with musical trends, this is your go-to destination for the freshest sounds. Our team of music experts works around the clock to ensure you're always hearing tomorrow's hits today, making this the perfect soundtrack for your daily life. We analyze millions of streams, social media mentions, and radio airplay data to bring you the most accurate representation of what's truly popular right now. From breakthrough artists making their first chart appearance to established superstars dropping new hits, every song on this channel has earned its place through pure popularity and cultural impact. The playlist updates multiple times throughout the day, ensuring you're always connected to the pulse of contemporary music culture.",
     tags: ["Pop", "Current Hits", "Top Charts", "Mainstream", "Popular"],
   },
   {
@@ -19,7 +19,7 @@ export const mockChannels: Channel[] = [
     category: "mostPopular",
     type: "music",
     description:
-      "The legendary sounds that defined rock music. From iconic guitar solos to powerful vocals, experience the timeless tracks that shaped generations of music lovers.",
+      "The legendary sounds that defined rock music. From iconic guitar solos to powerful vocals, experience the timeless tracks that shaped generations.",
     tags: ["Classic Rock", "Guitar", "70s", "80s", "Legends"],
   },
   {
@@ -27,18 +27,26 @@ export const mockChannels: Channel[] = [
     name: "All-Time Greatest Hits",
     category: "mostPopular",
     type: "music",
+    description:
+      "A comprehensive collection of the most beloved songs spanning multiple decades and genres. From timeless classics that defined their eras to crossover hits that transcended musical boundaries, this channel celebrates the songs that have become part of our collective musical DNA. Whether you're reliving memories or discovering these masterpieces for the first time, every track tells a story.",
+    tags: ["Classic Hits", "Timeless", "Multi-Genre", "Nostalgia", "Essential"],
   },
   {
     id: "4",
     name: "Easy Breezy",
     category: "mostPopular",
     type: "music",
+    description: "Effortless listening for any mood.",
+    tags: ["Easy Listening", "Relaxed", "Smooth", "Chill", "Background"],
   },
   {
     id: "5",
     name: "80s and '90s Pop Rock",
     category: "mostPopular",
     type: "music",
+    description:
+      "Take a nostalgic journey through two of music's most defining decades with the pop-rock anthems that dominated the airwaves and shaped a generation. From the synthesizer-driven melodies and big hair ballads of the 1980s to the grunge-influenced alternative rock that defined the 1990s, this collection captures the raw energy and emotional depth that made these eras unforgettable. Experience the evolution from new wave experimentation to the authentic rebellion of alternative rock, featuring both mainstream hits and underground gems that influenced countless artists. These are the songs that played at school dances, graduation parties, and first dates, creating the soundtrack to coming-of-age stories across two transformative decades. Whether you lived through these eras or are discovering their magic for the first time, these tracks continue to resonate with their timeless hooks, memorable lyrics, and the unmistakable spirit of musical innovation that defined the late 20th century.",
+    tags: ["80s", "90s", "Pop Rock", "Alternative", "Nostalgia", "Retro"],
   },
   {
     id: "6",
@@ -87,7 +95,7 @@ export const mockChannels: Channel[] = [
     category: "wellness",
     type: "music",
     description:
-      "Healing energy through sound. Gentle melodies and soothing frequencies designed to promote relaxation, balance your chakras, and restore inner peace.",
+      "Healing energy through sound. Gentle melodies and soothing frequencies designed to promote relaxation, balance your chakras, and restore inner peace. This carefully curated collection of Reiki music combines traditional Japanese healing principles with modern sound therapy techniques. Each track has been specifically chosen for its ability to facilitate deep meditation, energy healing, and spiritual alignment. The frequencies used in these compositions are based on ancient knowledge of sound healing, incorporating crystal bowl tones, nature sounds, and harmonious melodies that resonate with the body's energy centers. Whether you're a Reiki practitioner, meditation enthusiast, or simply seeking a peaceful escape from daily stress, this channel provides the perfect sonic environment for inner transformation and healing.",
     tags: ["Reiki", "Healing", "Meditation", "Relaxation", "Spiritual"],
   },
   { id: "9", name: "Om", category: "wellness", type: "music" },

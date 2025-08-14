@@ -7,6 +7,8 @@ import BackHeader from "../BackHeader";
 import ActionButtons from "../ActionButtons";
 import ChannelTags from "../ChannelTags";
 import CategorySwimlane from "../swimlanes/CategorySwimlane";
+import TruncatedText from "../TruncatedText";
+import TextModal from "../TextModal";
 
 function ChannelDetails() {
   const { selectedChannel, navigateToChannel } = useNavigation();
@@ -14,6 +16,8 @@ function ChannelDetails() {
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isHeaderMeasured, setIsHeaderMeasured] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", text: "" });
 
   // Use useLayoutEffect to measure header AFTER DOM layout but BEFORE paint
   useLayoutEffect(() => {
@@ -109,6 +113,18 @@ function ChannelDetails() {
     // TODO: Filter channels by tag or navigate to tag results
   };
 
+  const handleShowMoreDescription = (text: string) => {
+    setModalContent({
+      title: selectedChannel.name,
+      text: text,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   // Get related channels (same category, excluding current channel)
   const relatedChannels = mockChannels
     .filter(
@@ -183,9 +199,12 @@ function ChannelDetails() {
 
               {/* Description */}
               {selectedChannel.description && (
-                <p className="text-lg text-stingray-gray-800 leading-relaxed">
-                  {selectedChannel.description}
-                </p>
+                <TruncatedText
+                  text={selectedChannel.description}
+                  maxLines={3}
+                  className="text-lg text-stingray-gray-800 leading-relaxed"
+                  onShowMore={handleShowMoreDescription}
+                />
               )}
 
               {/* Tags */}
@@ -217,6 +236,14 @@ function ChannelDetails() {
           )}
         </div>
       </div>
+
+      {/* Text Modal */}
+      <TextModal
+        isOpen={isModalOpen}
+        title={modalContent.title}
+        content={modalContent.text}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }
