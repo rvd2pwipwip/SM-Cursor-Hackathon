@@ -9,12 +9,18 @@ export const mockChannels: Channel[] = [
     type: "music",
     isFavorite: true,
     thumbnail: "https://picsum.photos/400/400?random=1",
+    description:
+      "The hottest tracks dominating the charts right now. Featuring the biggest hits from the most popular artists across all genres, updated daily to keep you in the loop with what's trending.",
+    tags: ["Pop", "Current Hits", "Top Charts", "Mainstream", "Popular"],
   },
   {
     id: "2",
     name: "Massive Classic Rock",
     category: "mostPopular",
     type: "music",
+    description:
+      "The legendary sounds that defined rock music. From iconic guitar solos to powerful vocals, experience the timeless tracks that shaped generations of music lovers.",
+    tags: ["Classic Rock", "Guitar", "70s", "80s", "Legends"],
   },
   {
     id: "3",
@@ -53,6 +59,9 @@ export const mockChannels: Channel[] = [
     name: "Reiki",
     category: "wellness",
     type: "music",
+    description:
+      "Healing energy through sound. Gentle melodies and soothing frequencies designed to promote relaxation, balance your chakras, and restore inner peace.",
+    tags: ["Reiki", "Healing", "Meditation", "Relaxation", "Spiritual"],
   },
   { id: "9", name: "Om", category: "wellness", type: "music" },
   { id: "10", name: "Peaceful Forest", category: "wellness", type: "music" },

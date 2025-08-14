@@ -6,15 +6,17 @@ import CategorySwimlane from "../swimlanes/CategorySwimlane";
 import FavoriteSwimlane from "../swimlanes/FavoriteSwimlane";
 import Header from "../Header";
 import { useResponsiveLayout } from "../../hooks/useResponsiveLayout";
+import { useNavigation } from "../../hooks/useNavigation";
 
 function Home() {
   const { cardWidth, leftMargin, horizontalPadding } = useResponsiveLayout();
+  const { navigateToChannel } = useNavigation();
   const [activeFilter, setActiveFilter] = useState(
     homeContentSwitcher.defaultActiveTab || "all"
   );
 
   const handleChannelClick = (channel: Channel) => {
-    console.log("Playing channel:", channel.name);
+    navigateToChannel(channel);
   };
 
   const handleMoreClick = (category: Category) => {

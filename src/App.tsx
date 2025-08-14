@@ -1,6 +1,7 @@
 import Home from "./components/screens/Home";
 import SearchBrowse from "./components/screens/SearchBrowse";
 import AppInfo from "./components/screens/AppInfo";
+import ChannelDetails from "./components/screens/ChannelDetails";
 import MainMenu from "./components/navigation/MainMenu";
 import { NavigationProvider } from "./contexts/NavigationContext";
 import { useNavigation } from "./hooks/useNavigation";
@@ -17,6 +18,8 @@ function AppContent() {
         return <SearchBrowse />;
       case "appInfo":
         return <AppInfo />;
+      case "channelDetails":
+        return <ChannelDetails />;
       default:
         return <Home />;
     }

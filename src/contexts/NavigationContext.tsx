@@ -1,8 +1,9 @@
 import { createContext, useState } from "react";
 import type { ReactNode } from "react";
 import { menuItems, navigationItems } from "../data/navigation";
+import type { Channel } from "../types";
 
-export type Screen = "home" | "search" | "appInfo";
+export type Screen = "home" | "search" | "appInfo" | "channelDetails";
 export type MenuItemId = "burger" | Screen;
 
 export interface NavigationItem {
@@ -22,7 +23,9 @@ interface NavigationContextType {
   isMenuExpanded: boolean;
   menuItems: MenuItem[];
   navigationItems: NavigationItem[];
+  selectedChannel: Channel | null;
   navigateToScreen: (screen: Screen) => void;
+  navigateToChannel: (channel: Channel) => void;
   toggleMenu: () => void;
   collapseMenu: () => void;
   expandMenu: () => void;
@@ -39,12 +42,20 @@ interface NavigationProviderProps {
 export const NavigationProvider = ({ children }: NavigationProviderProps) => {
   const [currentScreen, setCurrentScreen] = useState<Screen>("home");
   const [isMenuExpanded, setIsMenuExpanded] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
 
   const navigateToScreen = (screen: Screen) => {
     // Always collapse menu before navigating
     setIsMenuExpanded(false);
     setCurrentScreen(screen);
     console.log("Navigating to:", screen); // Debug log
+  };
+
+  const navigateToChannel = (channel: Channel) => {
+    setSelectedChannel(channel);
+    setIsMenuExpanded(false);
+    setCurrentScreen("channelDetails");
+    console.log("Navigating to channel:", channel.name); // Debug log
   };
 
   const toggleMenu = () => {
@@ -64,7 +75,9 @@ export const NavigationProvider = ({ children }: NavigationProviderProps) => {
     isMenuExpanded,
     menuItems,
     navigationItems,
+    selectedChannel,
     navigateToScreen,
+    navigateToChannel,
     toggleMenu,
     collapseMenu,
     expandMenu,

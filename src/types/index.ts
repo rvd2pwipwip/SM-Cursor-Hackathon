@@ -7,6 +7,7 @@ export interface Channel {
   description?: string;
   featured?: boolean;
   isFavorite?: boolean;
+  tags?: string[];
 }
 
 export interface Category {

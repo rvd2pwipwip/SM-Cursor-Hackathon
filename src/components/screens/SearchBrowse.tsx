@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { useResponsiveLayout } from "../../hooks/useResponsiveLayout";
+import { useNavigation } from "../../hooks/useNavigation";
 import { searchBrowseContentSwitcher } from "../../data/switcher";
 import ContentSwitcher from "../ContentSwitcher";
 import FilterSwimlane from "../swimlanes/FilterSwimlane";
@@ -9,6 +10,7 @@ import type { FilterType, Category, Channel } from "../../types";
 function SearchBrowse() {
   const { leftMargin, horizontalPadding, cardWidth, gapWidth, cardsPerRow } =
     useResponsiveLayout();
+  const { navigateToChannel } = useNavigation();
   const [activeContentType, setActiveContentType] = useState(
     searchBrowseContentSwitcher.defaultActiveTab || "music"
   );
@@ -22,8 +24,7 @@ function SearchBrowse() {
   };
 
   const handleFilterClick = (channel: Channel) => {
-    console.log("Navigate to category grid view for:", channel.name);
-    // TODO: Implement navigation to category grid view
+    navigateToChannel(channel);
   };
 
   const handleCategoryMoreClick = (category: Category) => {
