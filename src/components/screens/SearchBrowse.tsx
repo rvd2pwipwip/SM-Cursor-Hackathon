@@ -1,66 +1,167 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { useResponsiveLayout } from "../../hooks/useResponsiveLayout";
-import MusicFilterGrid from "../filters/MusicFilterGrid";
+import { searchBrowseContentSwitcher } from "../../data/switcher";
+import ContentSwitcher from "../ContentSwitcher";
+import FilterSwimlane from "../swimlanes/FilterSwimlane";
+import { musicFilters } from "../../data/musicFilters";
+import type { FilterType, Category, Channel } from "../../types";
 
 function SearchBrowse() {
-  const { leftMargin, horizontalPadding } = useResponsiveLayout();
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const { leftMargin, horizontalPadding, cardWidth, gapWidth, cardsPerRow } =
+    useResponsiveLayout();
+  const [activeContentType, setActiveContentType] = useState(
+    searchBrowseContentSwitcher.defaultActiveTab || "music"
+  );
+  const [selectedFilter, setSelectedFilter] = useState<string>("");
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [isHeaderMeasured, setIsHeaderMeasured] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
 
-  const handleFilterChange = (filterId: string, _categoryId: string) => {
-    setSelectedFilters((prev) => {
-      if (prev.includes(filterId)) {
-        // Remove filter if already selected
-        return prev.filter((id) => id !== filterId);
-      } else {
-        // Add filter if not selected
-        return [...prev, filterId];
-      }
-    });
+  const handleContentTypeChange = (contentType: string) => {
+    setActiveContentType(contentType);
+    // Reset filter when switching content types
+    setSelectedFilter("");
+    console.log("Content type changed to:", contentType);
   };
+
+  const handleFilterSelect = (filterId: string) => {
+    // Single selection behavior - replace current selection
+    setSelectedFilter(filterId === selectedFilter ? "" : filterId);
+    console.log("Filter selected:", filterId);
+  };
+
+  const handleCategoryMoreClick = (category: Category) => {
+    console.log("Navigate to category page:", category.name);
+    // TODO: Implement navigation to dedicated category page
+  };
+
+  // Transform filter item to Channel for CategorySwimlane compatibility
+  const transformFilterToChannel = (
+    filter: any,
+    categoryId: string
+  ): Channel => ({
+    id: filter.id,
+    name: filter.label,
+    category: categoryId,
+    type: "music" as const,
+    description: filter.description,
+    isFavorite: selectedFilter === filter.id, // Use selection state as favorite for visual feedback
+  });
+
+  // Transform FilterCategory to Category for CategorySwimlane
+  const transformFilterCategoryToCategory = (
+    filterCategory: any,
+    categoryId: string
+  ): Category => ({
+    id: categoryId,
+    name: filterCategory.name,
+    type: "music" as const,
+    channels: filterCategory.items.map((item: any) =>
+      transformFilterToChannel(item, categoryId)
+    ),
+  });
 
   const clearAllFilters = () => {
-    setSelectedFilters([]);
+    setSelectedFilter("");
   };
+
+  // Use useLayoutEffect to measure header AFTER DOM layout but BEFORE paint
+  useLayoutEffect(() => {
+    const measureHeaderHeight = () => {
+      if (headerRef.current) {
+        // Force a reflow to ensure accurate measurement
+        headerRef.current.offsetHeight;
+
+        // Use getBoundingClientRect for most accurate measurements
+        const rect = headerRef.current.getBoundingClientRect();
+        const height = Math.ceil(rect.height); // Ceil to avoid sub-pixel issues
+
+        console.log(
+          "Header height measured (useLayoutEffect):",
+          height,
+          "rect:",
+          rect
+        );
+        setHeaderHeight(height);
+        setIsHeaderMeasured(true);
+      }
+    };
+
+    // Measure immediately in layout effect
+    measureHeaderHeight();
+  }, [activeContentType]); // Re-measure when content type changes
+
+  // Separate effect for resize handling
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      if (headerRef.current && isHeaderMeasured) {
+        // Force reflow
+        headerRef.current.offsetHeight;
+
+        const rect = headerRef.current.getBoundingClientRect();
+        const height = Math.ceil(rect.height);
+
+        console.log("Header height updated (resize):", height);
+        setHeaderHeight(height);
+      }
+    };
+
+    // Use ResizeObserver for dynamic height changes
+    let resizeObserver: ResizeObserver | null = null;
+
+    if (headerRef.current && isHeaderMeasured) {
+      resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const height = Math.ceil(entry.contentRect.height);
+          console.log("Header height changed (ResizeObserver):", height);
+          setHeaderHeight(height);
+        }
+      });
+      resizeObserver.observe(headerRef.current);
+    }
+
+    // Fallback for window resize
+    window.addEventListener("resize", updateHeaderHeight);
+
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+      window.removeEventListener("resize", updateHeaderHeight);
+    };
+  }, [isHeaderMeasured]); // Only set up observers after initial measurement
+
+  // Get music filter categories for display
+  const getMusicFilterCategories = (): Category[] => {
+    if (activeContentType !== "music") {
+      return []; // Return empty for podcasts/radio until implemented
+    }
+
+    return Object.entries(musicFilters).map(([categoryId, filterCategory]) =>
+      transformFilterCategoryToCategory(filterCategory, categoryId)
+    );
+  };
+
+  const filterCategories = getMusicFilterCategories();
 
   return (
     <div className="flex-1 relative">
-      {/* Main content area */}
-      <div className="h-full overflow-y-auto hide-scrollbar">
+      {/* Fixed Glass Header */}
+      <div ref={headerRef} className="fixed top-0 left-0 right-0 z-50">
         <div
-          className="space-y-10 pt-48 lg:pt-36 pb-10"
+          className="bg-white/90 backdrop-blur-md border-b border-gray-200/50"
           style={{
-            marginLeft: `${leftMargin}px`,
-            paddingLeft: `${horizontalPadding}px`,
+            paddingLeft: `${leftMargin + horizontalPadding}px`,
             paddingRight: `${horizontalPadding}px`,
           }}
         >
-          {/* Page Header */}
-          <div className="text-center">
-            <h1 className="text-stingray-gray-700 font-roboto font-normal text-6xl leading-tight mb-4">
-              Search & Browse
-            </h1>
-            <p className="text-stingray-gray-500 text-xl mb-4">
-              Discover new content and explore our catalog
-            </p>
-
-            {/* Clear Filters Button */}
-            {selectedFilters.length > 0 && (
-              <button
-                onClick={clearAllFilters}
-                className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                Clear All Filters ({selectedFilters.length})
-              </button>
-            )}
-          </div>
-
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto">
+          <div className="py-6 space-y-6">
+            {/* Search Field */}
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search for music, artists, genres..."
-                className="w-full px-6 py-4 text-lg border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Search music, podcasts or audiobooks"
+                className="w-full px-6 py-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100/50"
               />
               <button className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                 <svg
@@ -78,49 +179,93 @@ function SearchBrowse() {
                 </svg>
               </button>
             </div>
-          </div>
 
-          {/* Music Filter Grid */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                Filter Music
-              </h2>
-              <p className="text-gray-600">
-                Select filters to narrow down your music discovery
-              </p>
+            {/* Content Type Switcher */}
+            <div className="flex justify-center">
+              <ContentSwitcher
+                tabs={searchBrowseContentSwitcher.tabs}
+                activeTab={activeContentType}
+                onTabChange={handleContentTypeChange}
+              />
             </div>
-
-            <MusicFilterGrid
-              selectedFilters={selectedFilters}
-              onFilterChange={handleFilterChange}
-            />
           </div>
+        </div>
+      </div>
 
-          {/* Results Section */}
-          {selectedFilters.length > 0 ? (
-            <div className="bg-gray-50 rounded-lg p-12 text-center">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                Search Results
-              </h3>
-              <p className="text-gray-600 text-lg mb-4">
-                Showing results for {selectedFilters.length} selected filter
-                {selectedFilters.length !== 1 ? "s" : ""}
-              </p>
-              <div className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
-                <p className="text-gray-500">
-                  Music results matching your filters would appear here...
-                </p>
-              </div>
-            </div>
+      {/* Scrollable Content */}
+      <div className="h-full overflow-y-auto hide-scrollbar">
+        <div
+          className="space-y-8 pb-10"
+          style={{
+            marginLeft: `${leftMargin}px`,
+            paddingLeft: `${horizontalPadding}px`,
+            paddingRight: `${horizontalPadding}px`,
+            paddingTop: `${headerHeight + 16}px`, // Dynamic padding with 1rem (16px) buffer
+          }}
+        >
+          {/* Show content based on active content type */}
+          {activeContentType === "music" ? (
+            <>
+              {/* Clear Filter Button */}
+              {selectedFilter && (
+                <div className="flex justify-center">
+                  <button
+                    onClick={clearAllFilters}
+                    className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                  >
+                    Clear Filter
+                  </button>
+                </div>
+              )}
+
+              {/* Filter Category Swimlanes */}
+              {filterCategories.map((category) => (
+                <FilterSwimlane
+                  key={category.id}
+                  category={category}
+                  selectedFilter={selectedFilter}
+                  onChannelClick={(channel) => handleFilterSelect(channel.id)}
+                  onMoreClick={handleCategoryMoreClick}
+                />
+              ))}
+
+              {/* Results Section */}
+              {selectedFilter ? (
+                <div className="bg-gray-50 rounded-lg p-12 text-center">
+                  <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+                    Search Results
+                  </h3>
+                  <p className="text-gray-600 text-lg mb-4">
+                    Showing results for selected filter
+                  </p>
+                  <div className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
+                    <p className="text-gray-500">
+                      Music results matching your filter would appear here...
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gray-50 rounded-lg p-12 text-center">
+                  <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+                    Ready to Discover Music?
+                  </h3>
+                  <p className="text-gray-600 text-lg">
+                    Select a filter from any category above to find music that
+                    matches your preferences
+                  </p>
+                </div>
+              )}
+            </>
           ) : (
+            /* Placeholder for Podcasts/Radio */
             <div className="bg-gray-50 rounded-lg p-12 text-center">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                Ready to Discover Music?
+                {activeContentType === "podcasts" ? "Podcasts" : "Radio"} Coming
+                Soon
               </h3>
               <p className="text-gray-600 text-lg">
-                Use the filters above to find music that matches your mood,
-                activity, or preferences
+                {activeContentType === "podcasts" ? "Podcast" : "Radio"} filters
+                and content will be available shortly
               </p>
             </div>
           )}

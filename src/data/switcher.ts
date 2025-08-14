@@ -39,3 +39,13 @@ export const podcastCategorySwitcher: SwitcherConfig = {
   ],
   defaultActiveTab: "news",
 };
+
+// SearchBrowse page content switcher configuration
+export const searchBrowseContentSwitcher: SwitcherConfig = {
+  tabs: [
+    { id: "music", label: "Music" },
+    { id: "podcasts", label: "Podcasts" },
+    { id: "radio", label: "Radio" },
+  ],
+  defaultActiveTab: "music",
+};
