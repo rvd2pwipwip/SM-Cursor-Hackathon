@@ -6,10 +6,12 @@ import GhostFavoriteCard from "../cards/GhostFavoriteCard";
 
 interface FavoriteSwimlaneProps {
   favoriteChannels: Channel[];
+  onChannelClick?: (channel: Channel) => void;
 }
 
 const FavoriteSwimlane: React.FC<FavoriteSwimlaneProps> = ({
   favoriteChannels,
+  onChannelClick,
 }) => {
   const {
     favoriteCardsPerRow,
@@ -94,6 +96,7 @@ const FavoriteSwimlane: React.FC<FavoriteSwimlaneProps> = ({
             cardWidth={favoriteCardWidth}
             cardHeight={cardHeight}
             gapWidth={gapWidth}
+            onClick={onChannelClick}
           />
         ))}
 

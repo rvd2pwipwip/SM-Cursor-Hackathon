@@ -6,13 +6,20 @@ interface FavoriteChannelCardProps {
   cardWidth: number;
   cardHeight: number;
   gapWidth: number;
+  onClick?: (channel: Channel) => void;
 }
 
 const FavoriteChannelCard: React.FC<FavoriteChannelCardProps> = ({
   channel,
   cardWidth,
   cardHeight,
+  onClick,
 }) => {
+  const handleClick = () => {
+    onClick?.(channel);
+    console.log("Channel clicked:", channel.name);
+  };
+
   // Calculate thumbnail dimensions (square, left-aligned)
   const thumbnailSize = cardHeight; // Square thumbnail same height as card
   const cardBorderRadius = Math.round(cardHeight * 0.1); // Card border radius
@@ -22,7 +29,8 @@ const FavoriteChannelCard: React.FC<FavoriteChannelCardProps> = ({
 
   return (
     <div
-      className="flex flex-shrink-0 overflow-hidden transition-transform transition-shadow duration-200 hover:scale-105 hover:shadow-lg relative"
+      className="flex flex-shrink-0 overflow-hidden transition-transform transition-shadow duration-200 hover:scale-105 hover:shadow-lg relative cursor-pointer"
+      onClick={handleClick}
       style={{
         width: cardWidth,
         height: cardHeight,

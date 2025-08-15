@@ -162,7 +162,10 @@ function Home() {
 
           {/* Favorite Swimlane - show when user has favorites */}
           {favoriteChannels.length > 0 && (
-            <FavoriteSwimlane favoriteChannels={favoriteChannels} />
+            <FavoriteSwimlane
+              favoriteChannels={favoriteChannels}
+              onChannelClick={handleChannelClick}
+            />
           )}
 
           {/* Categories */}
