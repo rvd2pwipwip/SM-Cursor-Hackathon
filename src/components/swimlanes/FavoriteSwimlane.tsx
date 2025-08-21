@@ -47,7 +47,7 @@ const FavoriteSwimlane: React.FC<FavoriteSwimlaneProps> = ({
       <div className="flex items-end justify-between w-full">
         {/* Category Title */}
         <div className="flex items-center">
-          <h2 className="text-stingray-gray-700 font-roboto font-normal text-4xl leading-tight">
+          <h2 className="text-stingray-gray-700 font-roboto font-normal text-3xl leading-tight">
             Favorites
           </h2>
         </div>

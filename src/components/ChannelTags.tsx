@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "@stingray/component-library";
 
 interface ChannelTagsProps {
   tags: string[];
@@ -21,13 +22,14 @@ export const ChannelTags: React.FC<ChannelTagsProps> = ({
   return (
     <div className="flex flex-wrap gap-2.5">
       {tags.map((tag, index) => (
-        <button
+        <Button
           key={index}
+          variant="secondary"
+          size="sm"
           onClick={() => handleTagClick(tag)}
-          className="px-4 py-3 text-sm font-medium text-gray-700 bg-transparent border border-gray-300 rounded-full hover:border-gray-400 hover:bg-gray-50 transition-colors"
         >
           {tag}
-        </button>
+        </Button>
       ))}
     </div>
   );

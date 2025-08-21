@@ -40,11 +40,12 @@ const MainMenu: React.FC<MainMenuProps> = ({ onClickOutside }) => {
 
       {/* Main Menu Container */}
       <div
-        className={`fixed left-0 top-0 h-full bg-white shadow-sm z-[70] ${
+        className={`fixed left-0 top-0 h-full bg-white z-[70] ${
           isMenuExpanded
             ? "w-72 transition-all duration-300 ease-in-out"
             : "w-20"
         }`}
+        style={{ border: "none", boxShadow: "none" }}
       >
         <div className="flex flex-col h-full">
           {/* All Menu Items - unified vertical distribution */}

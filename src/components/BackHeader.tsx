@@ -16,10 +16,11 @@ export const BackHeader: React.FC<BackHeaderProps> = ({ title }) => {
 
   return (
     <div
-      className="bg-white/90 backdrop-blur-md border-b border-gray-200/50"
+      className="bg-white/90 backdrop-blur-md"
       style={{
         paddingLeft: `${leftMargin + horizontalPadding}px`,
         paddingRight: `${horizontalPadding}px`,
+        border: "none",
       }}
     >
       <div className="flex items-center justify-between min-h-[100px] py-6">

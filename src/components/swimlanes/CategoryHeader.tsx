@@ -1,4 +1,5 @@
 import React from "react";
+import { Next } from "stingray-icons";
 
 interface CategoryHeaderProps {
   title: string;
@@ -20,7 +21,7 @@ export const CategoryHeader: React.FC<CategoryHeaderProps> = ({
       <div className="flex items-center">
         <h2
           className="
-          text-stingray-gray-700 font-roboto font-normal text-4xl
+          text-stingray-gray-700 font-roboto font-normal text-3xl
           leading-tight
         "
         >
@@ -33,7 +34,7 @@ export const CategoryHeader: React.FC<CategoryHeaderProps> = ({
 
       {/* More Button */}
       <div
-        className="flex items-center gap-2 cursor-pointer group"
+        className="flex items-center cursor-pointer group"
         onClick={handleMoreClick}
       >
         <span
@@ -50,19 +51,7 @@ export const CategoryHeader: React.FC<CategoryHeaderProps> = ({
           group-hover:text-stingray-blue transition-colors duration-200
         "
         >
-          <svg
-            width="10"
-            height="18"
-            viewBox="0 0 10 18"
-            fill="none"
-            className="fill-current"
-          >
-            <path
-              d="M1.5 1.5L8.5 9L1.5 16.5"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-          </svg>
+          <Next size={18} />
         </div>
       </div>
     </div>

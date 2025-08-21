@@ -4,6 +4,8 @@ import AppInfo from "./components/screens/AppInfo";
 import ChannelDetails from "./components/screens/ChannelDetails";
 import MainMenu from "./components/navigation/MainMenu";
 import { NavigationProvider } from "./contexts/NavigationContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { ThemeToggle } from "./components/ThemeToggle";
 import { useNavigation } from "./hooks/useNavigation";
 
 function AppContent() {
@@ -26,7 +28,13 @@ function AppContent() {
   };
 
   return (
-    <div className="h-screen bg-white">
+    <div
+      className="h-screen"
+      style={{ backgroundColor: "var(--color-background-primary)" }}
+    >
+      {/* Theme Toggle */}
+      <ThemeToggle />
+
       {/* Main Menu - fixed position, overlays content */}
       <MainMenu />
 
@@ -41,9 +49,11 @@ function AppContent() {
 
 function App() {
   return (
-    <NavigationProvider>
-      <AppContent />
-    </NavigationProvider>
+    <ThemeProvider>
+      <NavigationProvider>
+        <AppContent />
+      </NavigationProvider>
+    </ThemeProvider>
   );
 }
 
